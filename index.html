@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>FF MAX Calibrador Pro - Sensibilidad Avanzada</title>
+<style>
+:root {
+  --bg: #0a0e18;
+  --panel: #141e2f;
+  --panel-border: #253148;
+  --input-bg: #0d1420;
+  --text: #f1f5fb;
+  --muted: #9ca3af;
+  --accent: #10b981;
+  --accent-hover: #059669;
+  --accent-glow: rgba(16, 185, 129, 0.3);
+  --blue: #3b82f6;
+  --blue-hover: #2563eb;
+  --red: #ef4444;
+  --warning: #f59e0b;
+  --success: #10b981;
+  --radius: 14px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: linear-gradient(135deg, #0a0e18 0%, #141e2f 50%, #0f1824 100%);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+  padding: 12px;
+  min-height: 100vh;
+}
+
+main { max-width: 1000px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.header-title { flex: 1; }
+
+.nav-tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.nav-btn {
+  padding: 8px 14px;
+  border: 1px solid var(--panel-border);
+  background: var(--panel);
+  color: var(--muted);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.nav-btn.active {
+  background: var(--accent);
+  color: #022c22;
+  border-color: var(--accent);
+}
+
+.nav-btn:hover { border-color: var(--accent); }
+
+.hero, .panel {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.4);
+}
+
+.hero {
+  border-left: 5px solid var(--accent);
+  background: linear-gradient(135deg, rgba(20, 30, 47, 0.9), rgba(15, 24, 36, 0.85));
+}
+
+h1 { font-size: clamp(24px, 5vw, 36px); font-weight: 800; color: #fff; letter-spacing: -0.8px; margin-bottom: 8px; }
+h2 { font-size: 18px; font-weight: 700; color: #38bdf8; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+p { color: var(--muted); font-size: 14px; line-height: 1.6; }
+
+.badge {
+  display: inline-block;
+  background: rgba(16, 185, 129, 0.18);
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 10px;
+}
+
+.badge.warning {
+  background: rgba(245, 158, 11, 0.18);
+  color: var(--warning);
+}
+
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; }
+.grid-full { grid-column: 1 / -1; }
+
+label { display: block; color: var(--muted); font-size: 12px; font-weight: 600; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.4px; }
+
+input, select, textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--panel-border);
+  background: var(--input-bg);
+  color: var(--text);
+  font-size: 14px;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+textarea { min-height: 80px; resize: vertical; font-family: inherit; }
+
+.preset-container {
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  padding: 14px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+
+button {
+  flex: 1;
+  min-width: 120px;
+  border: 0;
+  border-radius: 10px;
+  padding: 12px 18px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  background: var(--accent);
+  color: #022c22;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+button:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); }
+button:active { transform: translateY(0); }
+
+button.secondary { background: #1e293b; color: var(--text); border: 1px solid var(--panel-border); }
+button.secondary:hover { background: #334155; border-color: var(--accent); }
+
+button.blue { background: var(--blue); color: #ffffff; }
+button.blue:hover { background: var(--blue-hover); box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3); }
+
+button.danger { background: var(--red); }
+button.danger:hover { background: #dc2626; }
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.result { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; }
+
+.stat {
+  background: var(--input-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.stat:hover { border-color: var(--accent); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2); }
+
+.stat strong { font-size: 28px; color: var(--accent); display: block; font-weight: 800; margin-top: 4px; }
+.stat small { color: var(--muted); font-size: 11px; text-transform: uppercase; font-weight: 600; }
+
+.table-wrapper { overflow-x: auto; margin-top: 14px; border-radius: 10px; border: 1px solid var(--panel-border); }
+
+table { width: 100%; border-collapse: collapse; min-width: 500px; }
+
+th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--panel-border); font-size: 14px; }
+
+th { background: #0d1420; color: var(--muted); font-size: 11px; text-transform: uppercase; font-weight: 700; }
+
+td { color: var(--text); }
+
+td b { color: var(--accent); font-size: 18px; font-weight: 800; }
+
+tr:hover { background: rgba(16, 185, 129, 0.05); }
+
+.range { display: flex; align-items: center; gap: 8px; }
+.range input[type=range] { flex: 1; height: 6px; accent-color: var(--accent); cursor: pointer; }
+.range output { background: #1e293b; border: 1px solid var(--panel-border); padding: 4px 10px; border-radius: 6px; min-width: 45px; text-align: center; font-size: 12px; font-weight: bold; color: var(--accent); }
+
+.note { font-size: 12px; color: var(--muted); margin-top: 12px; line-height: 1.5; }
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: var(--input-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+  padding: 14px;
+  color: #cbd5e1;
+  font-family: "Courier New", monospace;
+  font-size: 13px;
+  margin-top: 12px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.profile-card {
+  background: var(--input-bg);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s;
+}
+
+.profile-card:hover { border-color: var(--accent); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.1); }
+
+.profile-info { flex: 1; }
+.profile-info strong { display: block; color: var(--text); margin-bottom: 4px; }
+.profile-info small { color: var(--muted); font-size: 12px; }
+
+.profile-actions { display: flex; gap: 8px; }
+
+.btn-small {
+  padding: 6px 12px;
+  font-size: 12px;
+  min-width: auto;
+  background: var(--blue);
+}
+
+.btn-small.danger { background: var(--red); }
+
+.hidden { display: none !important; }
+
+#toast {
+  visibility: hidden;
+  min-width: 280px;
+  background-color: var(--accent);
+  color: #022c22;
+  text-align: center;
+  border-radius: 10px;
+  padding: 14px 20px;
+  position: fixed;
+  z-index: 999;
+  left: 50%;
+  bottom: 30px;
+  transform: translateX(-50%);
+  font-weight: 700;
+  font-size: 14px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transition: opacity 0.3s, bottom 0.3s;
+}
+
+#toast.show { visibility: visible; opacity: 1; bottom: 40px; }
+
+.stats-comparison {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.comparison-item {
+  background: var(--input-bg);
+  border-left: 3px solid var(--accent);
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 12px;
+}
+
+.comparison-item strong { display: block; color: var(--accent); font-size: 16px; margin: 4px 0; }
+
+@media (max-width: 768px) {
+  body { padding: 10px; }
+  .hero, .panel { padding: 16px; }
+  .header { flex-direction: column; align-items: flex-start; }
+  .nav-tabs { width: 100%; }
+  .actions { flex-direction: column; }
+  button { width: 100%; }
+  .grid { grid-template-columns: 1fr; }
+  table { font-size: 12px; }
+  th, td { padding: 10px 12px; }
+}
+</style>
+</head>
+<body>
+
+<main>
+<div class="header">
+  <div class="header-title">
+    <h1>🎮 FF MAX Calibrador Pro</h1>
+    <p style="margin-top: 4px; font-size: 13px;">Generador avanzado de sensibilidad con histórico y análisis</p>
+  </div>
+  <div class="nav-tabs">
+    <button class="nav-btn active" data-tab="config">Config</button>
+    <button class="nav-btn" data-tab="result">Resultado</button>
+    <button class="nav-btn" data-tab="history">Histórico</button>
+    <button class="nav-btn" data-tab="guide">Guía</button>
+  </div>
+</div>
+
+<section class="hero" id="tab-config">
+  <span class="badge">v2.0 Pro Edition</span>
+  <h2>Configuración Avanzada</h2>
+  
+  <div class="preset-container">
+    <label for="preset">📱 Cargar Perfil Predefinido</label>
+    <select id="preset">
+      <option value="custom">-- Seleccionar modelo rápido --</option>
+      <optgroup label="Xiaomi">
+        <option value="redmi_note11">Redmi Note 11 (90Hz / 392 DPI)</option>
+        <option value="redmi_note13">Redmi Note 13 Pro (120Hz / 392 DPI)</option>
+        <option value="poco_x3pro">Poco X3 Pro (120Hz / 392 DPI)</option>
+      </optgroup>
+      <optgroup label="Samsung">
+        <option value="samsung_a55">Galaxy A55 (120Hz / 411 DPI)</option>
+        <option value="samsung_a34">Galaxy A34/A54 (120Hz / 411 DPI)</option>
+        <option value="samsung_s24">Galaxy S24 Ultra (120Hz / 501 DPI)</option>
+      </optgroup>
+      <optgroup label="Apple">
+        <option value="iphone_13">iPhone 13/14 (60/120Hz / 460 DPI)</option>
+        <option value="iphone_15">iPhone 15/15 Pro (120Hz / 460 DPI)</option>
+      </optgroup>
+      <optgroup label="Otros">
+        <option value="moto_g84">Motorola Moto G84 (120Hz / 411 DPI)</option>
+        <option value="realme_gt">Realme GT Neo 3/5 (120Hz / 420 DPI)</option>
+        <option value="oneplus_12">OnePlus 12 (120Hz / 480 DPI)</option>
+      </optgroup>
+    </select>
+  </div>
+
+  <div class="grid">
+    <div><label for="model">📋 Marca y modelo</label><input id="model" value="Mi celular" placeholder="Ej. Redmi Note 11"></div>
+    <div><label for="dpi">📊 DPI del sistema</label><input id="dpi" type="number" min="120" max="1200" value="411"></div>
+    <div><label for="hz">⚡ Tasa de refresco (Hz)</label>
+      <select id="hz">
+        <option value="60">60 Hz</option>
+        <option value="90">90 Hz</option>
+        <option value="120" selected>120 Hz</option>
+        <option value="144">144 Hz</option>
+        <option value="165">165 Hz</option>
+      </select>
+    </div>
+    <div><label for="w">📐 Ancho (Px)</label><input id="w" type="number" min="320" max="5000" value="1080"></div>
+    <div><label for="h">📐 Alto (Px)</label><input id="h" type="number" min="480" max="6000" value="2400"></div>
+    <div><label for="touch">✋ Respuesta táctil</label>
+      <select id="touch">
+        <option value="0.92">Lenta / Con mica gruesa</option>
+        <option value="0.96">Normal / Estándar</option>
+        <option value="1.00" selected>Buena / Cristal templado</option>
+        <option value="1.05">Rápida (Muestreo 240Hz)</option>
+        <option value="1.10">Ultra rápida (Muestreo 360Hz+)</option>
+      </select>
+    </div>
+    <div><label for="fingers">🖐️ Cantidad de dedos</label>
+      <select id="fingers">
+        <option value="0.96">2 Dedos (Claw)</option>
+        <option value="1.00" selected>3 Dedos (Estándar)</option>
+        <option value="1.05">4 Dedos o más</option>
+      </select>
+    </div>
+    <div><label for="style">⚔️ Estilo de juego</label>
+      <select id="style">
+        <option value="1.08" selected>Agresivo (SMG / CQC)</option>
+        <option value="1.00">Equilibrado (AR / Variado)</option>
+        <option value="0.92">Preciso (Sniper / Un tiro)</option>
+        <option value="0.85">Francotirador Pro</option>
+      </select>
+    </div>
+    <div><label for="rank">🏆 Rango de juego</label>
+      <select id="rank">
+        <option value="0.95">Bronce/Plata (Iniciante)</option>
+        <option value="1.00" selected>Oro/Platino (Intermedio)</option>
+        <option value="1.05">Diamante+ (Avanzado)</option>
+      </select>
+    </div>
+    <div class="grid-full">
+      <label for="notes">📝 Observaciones / Notas personales</label>
+      <textarea id="notes" placeholder="Ej. Uso MP40, mica de cristal templado, mano pequeña, prefiero velocidad sobre precisión..."></textarea>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button id="generate">🔧 Calcular Perfil</button>
+    <button class="secondary" id="reset">↻ Restablecer</button>
+    <button class="blue" id="save-profile">💾 Guardar Perfil</button>
+  </div>
+</section>
+
+<section class="panel hidden" id="tab-result">
+  <h2>📊 Resultado Calibrado</h2>
+  <div class="result">
+    <div class="stat"><small>Dispositivo</small><strong id="profileName">Universal</strong></div>
+    <div class="stat"><small>Multiplicador</small><strong id="factor">1.00x</strong></div>
+    <div class="stat"><small>Botón Disparo</small><strong id="fireText">50%</strong></div>
+    <div class="stat"><small>Puntaje</small><strong id="score">0%</strong></div>
+  </div>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr><th>Parámetro</th><th>Sensibilidad (0-200)</th><th>Ajuste Fino</th></tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+
+  <div class="actions">
+    <button class="blue" id="copy">📋 Copiar Configuración</button>
+    <button class="secondary" id="json">📥 Exportar JSON</button>
+    <button class="secondary" id="image">🖼️ Generar Imagen</button>
+  </div>
+
+  <pre id="output">Haz clic en "Calcular Perfil" para generar la configuración.</pre>
+
+  <h2 style="margin-top: 24px;">🔧 Asistente de Refinamiento</h2>
+  <div class="grid">
+    <div>
+      <label for="test">Diagnóstico en partida</label>
+      <select id="test">
+        <option value="0">✓ La mira responde bien (Perfecto)</option>
+        <option value="-6">⬆️ Se pasa por arriba (Sobregiro)</option>
+        <option value="6">⬇️ Se queda pegada abajo (Falta velocidad)</option>
+        <option value="-4">🔄 Tiembla al levantar rápido</option>
+        <option value="4">⚖️ Siento pesada la pantalla</option>
+      </select>
+    </div>
+    <div>
+      <label for="weapon">Arma principal</label>
+      <select id="weapon">
+        <option value="General">Balanceada / Todas</option>
+        <option value="SMG">SMG (MP40, Vector)</option>
+        <option value="Escopeta">Escopeta (M1887, SPAS)</option>
+        <option value="AR">Fusil (AK, M4, Groza)</option>
+        <option value="Sniper">Francotirador (AWM, M82)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button id="refine">⚡ Aplicar Corrección</button>
+  </div>
+</section>
+
+<section class="panel hidden" id="tab-history">
+  <h2>📚 Histórico de Perfiles</h2>
+  <p class="note">Tus configuraciones se guardan automáticamente en el navegador. Máximo 10 perfiles.</p>
+  <div id="historyContainer">
+    <p style="color: var(--muted); text-align: center; padding: 40px 20px;">No hay perfiles guardados aún.</p>
+  </div>
+  <div class="actions">
+    <button class="danger" id="clear-history">🗑️ Limpiar Histórico</button>
+  </div>
+</section>
+
+<section class="panel hidden" id="tab-guide">
+  <h2>📖 Guía Completa</h2>
+  
+  <h3 style="color: var(--accent); margin-top: 20px; margin-bottom: 10px;">¿Cómo usar el calibrador?</h3>
+  <p class="note" style="margin: 0 0 16px 0;">
+    <strong>Paso 1:</strong> Ingresa las especificaciones exactas de tu dispositivo (DPI, Hz, resolución).<br>
+    <strong>Paso 2:</strong> Selecciona tu estilo de juego y preferencias de respuesta táctil.<br>
+    <strong>Paso 3:</strong> Haz clic en "Calcular Perfil" para generar la configuración base.<br>
+    <strong>Paso 4:</strong> Prueba en Entrenamiento y ajusta con los deslizadores si es necesario.<br>
+    <strong>Paso 5:</strong> Usa el Asistente de Refinamiento para corregir según tu experiencia en partida.
+  </p>
+
+  <h3 style="color: var(--accent); margin-top: 20px; margin-bottom: 10px;">Fórmula de Cálculo</h3>
+  <pre>Sensibilidad Calculada = Base × √(DPI_ref ÷ DPI) × HzBonus × TouchFactor × FingerFactor × StyleFactor × RankFactor</pre>
+
+  <h3 style="color: var(--accent); margin-top: 20px; margin-bottom: 10px;">Consejos de Optimización</h3>
+  <ul style="color: var(--muted); font-size: 13px; line-height: 1.8; margin-left: 20px;">
+    <li>📌 <strong>Botón de disparo:</strong> Colócalo en la zona inferior media de la pantalla para máximo confort.</li>
+    <li>🎯 <strong>Sensibilidad general:</strong> Es la más importante. Ajusta primero esta.</li>
+    <li>🔍 <strong>Miras:</strong> 2x y 4x suelen ser 70-80% de la sensibilidad general.</li>
+    <li>🔬 <strong>Francotirador:</strong> Mantén baja (50-70) para precisión máxima.</li>
+    <li>📊 <strong>Entrenar 30 min:</strong> Antes de cambiar a clasificatoria.</li>
+    <li>🎮 <strong>Cambios graduales:</strong> Ajusta de 2-5 puntos por sesión para adaptarte.</li>
+  </ul>
+
+  <h3 style="color: var(--accent); margin-top: 20px; margin-bottom: 10px;">Preguntas Frecuentes</h3>
+  <div style="margin-top: 12px;">
+    <details style="margin-bottom: 12px; color: var(--muted); font-size: 13px;">
+      <summary style="cursor: pointer; font-weight: 600; color: var(--text);">¿Qué es el DPI y cómo lo encuentro?</summary>
+      <p style="margin-top: 8px; padding-left: 12px;">Ve a Ajustes > Pantalla > Densidad de píxeles (DPI). Algunos dispositivos lo muestran como ppi (píxeles por pulgada).</p>
+    </details>
+    <details style="margin-bottom: 12px; color: var(--muted); font-size: 13px;">
+      <summary style="cursor: pointer; font-weight: 600; color: var(--text);">¿Por qué mis sensibilidades siguen subiendo?</summary>
+      <p style="margin-top: 8px; padding-left: 12px;">Acostúmbrate 30 minutos antes de ajustar. El cuerpo necesita tiempo para calibrar la respuesta neuromuscular.</p>
+    </details>
+    <details style="margin-bottom: 12px; color: var(--muted); font-size: 13px;">
+      <summary style="cursor: pointer; font-weight: 600; color: var(--text);">¿Cuál es la mejor sensibilidad general?</summary>
+      <p style="margin-top: 8px; padding-left: 12px;">Entre 140-180 es el rango óptimo. Valores más bajos = más precisión, más altos = respuesta rápida.</p>
+    </details>
+  </div>
+</section>
+
+</main>
+
+<div id="toast">¡Copiado al portapapeles!</div>
+
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const STORAGE_KEY = "ffmax_profiles";
+  const MAX_PROFILES = 10;
+
+  const presets = {
+    redmi_note11: { model: "Xiaomi Redmi Note 11", dpi: 392, hz: "90", w: 1080, h: 2400, touch: "1.00" },
+    redmi_note13: { model: "Xiaomi Redmi Note 13 Pro", dpi: 392, hz: "120", w: 1080, h: 2412, touch: "1.05" },
+    poco_x3pro: { model: "Poco X3 Pro", dpi: 392, hz: "120", w: 1080, h: 2400, touch: "1.05" },
+    samsung_a55: { model: "Samsung Galaxy A55", dpi: 411, hz: "120", w: 1080, h: 2340, touch: "1.00" },
+    samsung_a34: { model: "Samsung Galaxy A34/A54", dpi: 411, hz: "120", w: 1080, h: 2340, touch: "1.00" },
+    samsung_s24: { model: "Samsung Galaxy S24 Ultra", dpi: 501, hz: "120", w: 1440, h: 3120, touch: "1.08" },
+    iphone_13: { model: "iPhone 13/14", dpi: 460, hz: "120", w: 1170, h: 2532, touch: "1.05" },
+    iphone_15: { model: "iPhone 15/15 Pro", dpi: 460, hz: "120", w: 1170, h: 2556, touch: "1.08" },
+    moto_g84: { model: "Motorola Moto G84", dpi: 411, hz: "120", w: 1080, h: 2400, touch: "1.00" },
+    realme_gt: { model: "Realme GT Neo 3/5", dpi: 420, hz: "120", w: 1080, h: 2412, touch: "1.05" },
+    oneplus_12: { model: "OnePlus 12", dpi: 480, hz: "120", w: 1440, h: 3168, touch: "1.08" }
+  };
+
+  const scopeNames = ["General", "Punto Rojo", "Mira 2x", "Mira 4x", "Francotirador", "Cámara Libre"];
+  const baseSensitivities = [185, 175, 160, 140, 80, 150];
+
+  let calculatedBases = [];
+  let currentValues = [];
+  let lastData = {};
+
+  const clamp = (n, min = 0, max = 200) => Math.max(min, Math.min(max, Math.round(n)));
+
+  function showToast(msg, duration = 2500) {
+    const toast = $("toast");
+    toast.textContent = msg;
+    toast.classList.add("show");
+    setTimeout(() => toast.classList.remove("show"), duration);
+  }
+
+  function switchTab(tabName) {
+    document.querySelectorAll("[id^='tab-']").forEach(el => el.classList.add("hidden"));
+    $(`tab-${tabName}`).classList.remove("hidden");
+    document.querySelectorAll(".nav-btn").forEach(btn => btn.classList.remove("active"));
+    event.target.classList.add("active");
+  }
+
+  document.querySelectorAll(".nav-btn").forEach(btn => {
+    btn.addEventListener("click", (e) => switchTab(btn.dataset.tab));
+  });
+
+  function applyPreset() {
+    const key = $("preset").value;
+    if (presets[key]) {
+      const p = presets[key];
+      $("model").value = p.model;
+      $("dpi").value = p.dpi;
+      $("hz").value = p.hz;
+      $("w").value = p.w;
+      $("h").value = p.h;
+      $("touch").value = p.touch;
+      calculate();
+    }
+  }
+
+  function calculate() {
+    const dpi = Number($("dpi").value) || 411;
+    const hz = Number($("hz").value) || 60;
+    const w = Number($("w").value) || 1080;
+    const h = Number($("h").value) || 2400;
+    const touchFactor = Number($("touch").value) || 1;
+    const fingerFactor = Number($("fingers").value) || 1;
+    const styleFactor = Number($("style").value) || 1;
+    const rankFactor = Number($("rank").value) || 1;
+
+    const dpiNorm = 411 / dpi;
+    const hzBonus = 1 + ((hz - 60) / 120) * 0.12;
+    const factor = Math.sqrt(dpiNorm) * hzBonus * touchFactor * fingerFactor * styleFactor * rankFactor;
+
+    calculatedBases = baseSensitivities.map((base, idx) => {
+      let val = base * factor;
+      if (idx >= 4) val = val * 0.85;
+      return clamp(val);
+    });
+
+    currentValues = [...calculatedBases];
+
+    let btnSize = clamp(56 - (factor - 1) * 25, 35, 70);
+    if (fingerFactor > 1.02) btnSize -= 4;
+
+    const score = Math.round(((factor - 0.7) / 0.6) * 100);
+
+    lastData = {
+      model: $("model").value || "Mi celular",
+      dpi, hz, w, h,
+      factor: Number(factor.toFixed(3)),
+      fireSize: btnSize,
+      notes: $("notes").value,
+      weapon: $("weapon").value,
+      timestamp: new Date().toLocaleString("es-ES"),
+      score: clamp(score, 0, 100)
+    };
+
+    render(btnSize);
+    showToast("✓ Perfil calculado correctamente");
+  }
+
+  function render(btnSize) {
+    $("profileName").textContent = lastData.model;
+    $("factor").textContent = lastData.factor.toFixed(2) + "x";
+    $("fireText").textContent = btnSize + "%";
+    $("score").textContent = lastData.score + "%";
+
+    const rowsContainer = $("rows");
+    rowsContainer.innerHTML = "";
+
+    scopeNames.forEach((name, i) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td><strong>${name}</strong></td>
+        <td><b id="val-${i}">${currentValues[i]}</b></td>
+        <td>
+          <div class="range">
+            <input type="range" min="-20" max="20" value="0" data-i="${i}">
+            <output id="out-${i}">0</output>
+          </div>
+        </td>
+      `;
+      rowsContainer.appendChild(tr);
+    });
+
+    const fireRow = document.createElement("tr");
+    fireRow.innerHTML = `
+      <td><strong>⚡ Botón Disparo</strong></td>
+      <td><b>${btnSize}%</b></td>
+      <td><span class="note">Inferior media de pantalla</span></td>
+    `;
+    rowsContainer.appendChild(fireRow);
+
+    rowsContainer.querySelectorAll("input[type=range]").forEach(slider => {
+      slider.addEventListener("input", e => {
+        const i = Number(e.target.dataset.i);
+        const offset = Number(e.target.value);
+        currentValues[i] = clamp(calculatedBases[i] + offset);
+        $(`val-${i}`).textContent = currentValues[i];
+        $(`out-${i}`).textContent = (offset > 0 ? "+" : "") + offset;
+        updateOutputText();
+      });
+    });
+
+    updateOutputText();
+  }
+
+  function updateOutputText() {
+    const lines = scopeNames.map((n, i) => `${n}: ${currentValues[i]}`);
+    lines.push(`⚡ Botón Disparo: ${lastData.fireSize}%`);
+    
+    $("output").textContent = 
+      `╔════ FF MAX CONFIGURATION ════╗\n` +
+      `║ Modelo: ${lastData.model}\n` +
+      `║ DPI: ${lastData.dpi} | Hz: ${lastData.hz}Hz | Res: ${lastData.w}x${lastData.h}\n` +
+      `║ Factor: ${lastData.factor.toFixed(2)}x | Score: ${lastData.score}%\n` +
+      `║ Generado: ${lastData.timestamp}\n` +
+      `╠═════════════════════════════╣\n` +
+      lines.map(l => `║ ${l}`).join("\n") + "\n" +
+      `╠═════════════════════════════╣\n` +
+      `║ Notas: ${lastData.notes || "Sin observaciones"}\n` +
+      `╚═════════════════════════════╝`;
+  }
+
+  function saveProfile() {
+    if (!lastData.model || lastData.model === "Mi celular") {
+      showToast("❌ Ingresa un modelo de dispositivo");
+      return;
+    }
+
+    let profiles = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    
+    const newProfile = {
+      id: Date.now(),
+      ...lastData,
+      sensitivities: currentValues
+    };
+
+    profiles.unshift(newProfile);
+    profiles = profiles.slice(0, MAX_PROFILES);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(profiles));
+    
+    showToast(`💾 Perfil "${lastData.model}" guardado`);
+    loadHistory();
+  }
+
+  function loadHistory() {
+    const profiles = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    const container = $("historyContainer");
+
+    if (profiles.length === 0) {
+      container.innerHTML = '<p style="color: var(--muted); text-align: center; padding: 40px 20px;">No hay perfiles guardados aún.</p>';
+      return;
+    }
+
+    container.innerHTML = profiles.map((p, i) => `
+      <div class="profile-card">
+        <div class="profile-info">
+          <strong>${p.model}</strong>
+          <small>DPI: ${p.dpi} | Hz: ${p.hz} | Factor: ${p.factor.toFixed(2)}x | Score: ${p.score}%</small><br>
+          <small style="font-size: 11px; color: #666;">${p.timestamp}</small>
+        </div>
+        <div class="profile-actions">
+          <button class="btn-small blue" onclick="window.loadProfileData(${i})">Cargar</button>
+          <button class="btn-small danger" onclick="window.deleteProfile(${i})">Borrar</button>
+        </div>
+      </div>
+    `).join("");
+  }
+
+  window.loadProfileData = (index) => {
+    const profiles = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    const p = profiles[index];
+
+    $("model").value = p.model;
+    $("dpi").value = p.dpi;
+    $("hz").value = p.hz;
+    $("w").value = p.w;
+    $("h").value = p.h;
+    $("notes").value = p.notes;
+
+    lastData = { ...p };
+    currentValues = [...p.sensitivities];
+    calculatedBases = [...p.sensitivities];
+
+    render(p.fireSize);
+    switchTab("result");
+    showToast(`Perfil "${p.model}" cargado`);
+  };
+
+  window.deleteProfile = (index) => {
+    if (!confirm("¿Eliminar este perfil?")) return;
+    let profiles = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    profiles.splice(index, 1);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(profiles));
+    loadHistory();
+    showToast("Perfil eliminado");
+  };
+
+  $("preset").addEventListener("change", applyPreset);
+  $("generate").addEventListener("click", calculate);
+  $("reset").addEventListener("click", () => location.reload());
+  $("save-profile").addEventListener("click", saveProfile);
+
+  $("copy").addEventListener("click", () => {
+    updateOutputText();
+    const text = $("output").textContent;
+    navigator.clipboard.writeText(text)
+      .then(() => showToast("📋 Configuración copiada"))
+      .catch(() => showToast("Error al copiar"));
+  });
+
+  $("json").addEventListener("click", () => {
+    const dataToExport = { ...lastData, sensitivities: currentValues };
+    const blob = new Blob([JSON.stringify(dataToExport, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = `ffmax-${lastData.model.toLowerCase().replace(/[^a-z0-9]/g, "-")}.json`;
+    a.click();
+    showToast("📥 JSON descargado");
+  });
+
+  $("image").addEventListener("click", () => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 1200;
+    canvas.height = 630;
+    const ctx = canvas.getContext("2d");
+
+    ctx.fillStyle = "#0a0e18";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "#10b981";
+    ctx.font = "bold 48px Arial";
+    ctx.fillText("FF MAX - Calibrador Pro", 50, 80);
+
+    ctx.fillStyle = "#f1f5fb";
+    ctx.font = "20px Arial";
+    ctx.fillText(`Dispositivo: ${lastData.model}`, 50, 130);
+    ctx.fillText(`DPI: ${lastData.dpi} | Hz: ${lastData.hz} | Factor: ${lastData.factor.toFixed(2)}x`, 50, 160);
+    ctx.fillText(`Puntaje: ${lastData.score}%`, 50, 190);
+
+    ctx.fillStyle = "#94a3af";
+    ctx.font = "16px monospace";
+    let y = 250;
+    scopeNames.forEach((name, i) => {
+      ctx.fillText(`${name}: ${currentValues[i]}`, 50, y);
+      y += 30;
+    });
+
+    const link = document.createElement("a");
+    link.href = canvas.toDataURL("image/png");
+    link.download = `ffmax-${lastData.model.toLowerCase().replace(/[^a-z0-9]/g, "-")}.png`;
+    link.click();
+    showToast("🖼️ Imagen generada");
+  });
+
+  $("refine").addEventListener("click", () => {
+    if (!calculatedBases.length) calculate();
+    const delta = Number($("test").value);
+    
+    calculatedBases = calculatedBases.map((val, i) => {
+      const adj = (i >= 4) ? Math.round(delta * 0.6) : delta;
+      return clamp(val + adj);
+    });
+
+    currentValues = [...calculatedBases];
+    render(lastData.fireSize);
+    showToast("⚡ Refinamiento aplicado");
+  });
+
+  $("clear-history").addEventListener("click", () => {
+    if (confirm("¿Eliminar TODOS los perfiles guardados?")) {
+      localStorage.removeItem(STORAGE_KEY);
+      loadHistory();
+      showToast("🗑️ Histórico limpio");
+    }
+  });
+
+  calculate();
+  loadHistory();
+})();
+</script>
+</body>
+</html>
